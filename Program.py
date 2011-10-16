@@ -102,23 +102,23 @@ class storeMenu(cmd.Cmd):
     def logOut():
         print "not yet"
 
-loginMenu = loginMenu()
-storeMenu = storeMenu()
+lm = loginMenu()
+sm = storeMenu()
 
 class accessDatabase(cx_Oracle,loginMenu,storeMenu):
    
-    _connstr='jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman'
+    _connstr='the joker lives here'
 
     def memberLogin(username, password):
         conn = conn.connect(_connstr)
         curs = conn.cursor()
         while True:
             try:
-                checkUserId = curs.execute('SELECT userid FROM members WHERE userid =' + username)
-                checkPassword = curs.execute('SELECT password FROM members WHERE password =' + password)
+                checkUserId = curs.execute('SELECT userid FROM members WHERE userid =' + "'"+ username + "'")
+                checkPassword = curs.execute('SELECT password FROM members WHERE password =' + "'" + password + "'")
                 if checkUserId == username:
                     if checkPassword == password:
-                        storeMenu.cmdloop()
+                        sm.cmdloop()
                 else:
                     #ask for username and password again
                     pass
@@ -137,5 +137,5 @@ class accessDatabase(cx_Oracle,loginMenu,storeMenu):
             print row
         conn.close()
 
-print loginMenu.cmdloop()
+print lm.cmdloop()
 
