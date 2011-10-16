@@ -14,38 +14,6 @@
 
 import cmd, cx_Oracle, sys
 
-class accessDatabase(cx_Oracle,loginMenu,storeMenu):
-   
-    _connstr='jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman'
-
-    def memberLogin(username, password):
-        conn = conn.connect(_connstr)
-        curs = conn.cursor()
-        while True:
-            try:
-                checkUserId = curs.execute('SELECT userid FROM members WHERE userid =' + username)
-                checkPassword = curs.execute('SELECT password FROM members WHERE password =' + password)
-                if checkUserId = username:
-                    if checkPassword = password:
-                        sm.cmdloop()
-                else:
-                    #ask for username and password again
-                    pass
-            except:
-                print 'please try again' #im not entirely sure I understand exceptions
-
-    def accessDatabase(self, userName, password):
-        connstr='jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman'
-        print "You're using Oracle Client Tools v"+".".join(map(str,cx_Oracle.clientversion()))
-        conn = cx_Oracle.connect(connstr)
-        curs = conn.cursor()
-        curs.execute('select * from bs_books')
-        print curs.description
-
-        for row in curs:
-            print row
-        conn.close()
-
 class loginMenu(cmd.Cmd):
     intro = """
 **********************************************************************
@@ -134,8 +102,40 @@ class storeMenu(cmd.Cmd):
     def logOut():
         print "not yet"
 
-c = loginMenu()
-sm = storeMenu()
+loginMenu = loginMenu()
+storeMenu = storeMenu()
 
-print c.cmdloop()
+class accessDatabase(cx_Oracle,loginMenu,storeMenu):
+   
+    _connstr='jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman'
+
+    def memberLogin(username, password):
+        conn = conn.connect(_connstr)
+        curs = conn.cursor()
+        while True:
+            try:
+                checkUserId = curs.execute('SELECT userid FROM members WHERE userid =' + username)
+                checkPassword = curs.execute('SELECT password FROM members WHERE password =' + password)
+                if checkUserId == username:
+                    if checkPassword == password:
+                        storeMenu.cmdloop()
+                else:
+                    #ask for username and password again
+                    pass
+            except:
+                print 'please try again' #im not entirely sure I understand exceptions
+
+    def accessDatabase(self, userName, password):
+        connstr='jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman'
+        print "You're using Oracle Client Tools v"+".".join(map(str,cx_Oracle.clientversion()))
+        conn = cx_Oracle.connect(connstr)
+        curs = conn.cursor()
+        curs.execute('select * from bs_books')
+        print curs.description
+
+        for row in curs:
+            print row
+        conn.close()
+
+print loginMenu.cmdloop()
 
