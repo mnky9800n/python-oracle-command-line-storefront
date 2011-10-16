@@ -14,6 +14,18 @@
 
 import cmd, cx_Oracle, sys
 
+
+# functions
+
+def connectAndQuery(input):
+    _connstr = "wouldn't you like to know"
+    conn = cx_Oracle.connect(_connstr)
+    curs = conn.cursor()
+    curs.execute(input)
+    return curs.fetchall()
+
+# classes
+
 class loginMenu(cmd.Cmd):
     intro = """
 **********************************************************************
@@ -33,15 +45,19 @@ please type 'help' to explain your options
 
     prompt = """Please choose an option: """
 
-    def do_memberLogin(username, person):
-        """Allows existing members to login"""
-        while True:
-            try:
-                 username = input('please enter a user name: ')
-                 password = input('please enter a password: ')
-                 break
-            except ValueError:
-                print "Please try again!"
+    def do_memberLogin(username,password):
+        """
+        Allows existing members to login
+        format: memberLogin <username> <password>
+        """
+        connectAndQuery(
+                        """SELECT userid, password 
+                        FROM members 
+                        WHERE userid = """
+                        + "'" + username + "'" +
+                        """AND password = """
+                        + "'" + password + "'"
+                        )
 
     def do_newMemberRegistration(self, person):
         """Allows new members to register an account"""
@@ -104,38 +120,6 @@ class storeMenu(cmd.Cmd):
 
 lm = loginMenu()
 sm = storeMenu()
-
-class accessDatabase(cx_Oracle,loginMenu,storeMenu):
-   
-    _connstr='the joker lives here'
-
-    def memberLogin(username, password):
-        conn = conn.connect(_connstr)
-        curs = conn.cursor()
-        while True:
-            try:
-                checkUserId = curs.execute('SELECT userid FROM members WHERE userid =' + "'"+ username + "'")
-                checkPassword = curs.execute('SELECT password FROM members WHERE password =' + "'" + password + "'")
-                if checkUserId == username:
-                    if checkPassword == password:
-                        sm.cmdloop()
-                else:
-                    #ask for username and password again
-                    pass
-            except:
-                print 'please try again' #im not entirely sure I understand exceptions
-
-    def connectToDatabase(self, userName, password):
-        connstr='jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman'
-        print "You're using Oracle Client Tools v"+".".join(map(str,cx_Oracle.clientversion()))
-        conn = cx_Oracle.connect(connstr)
-        curs = conn.cursor()
-        curs.execute('select * from bs_books')
-        print curs.description
-
-        for row in curs:
-            print row
-        conn.close()
 
 print lm.cmdloop()
 
