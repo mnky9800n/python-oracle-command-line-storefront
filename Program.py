@@ -125,7 +125,7 @@ class accessDatabase(cx_Oracle,loginMenu,storeMenu):
             except:
                 print 'please try again' #im not entirely sure I understand exceptions
 
-    def accessDatabase(self, userName, password):
+    def connectToDatabase(self, userName, password):
         connstr='jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman'
         print "You're using Oracle Client Tools v"+".".join(map(str,cx_Oracle.clientversion()))
         conn = cx_Oracle.connect(connstr)
