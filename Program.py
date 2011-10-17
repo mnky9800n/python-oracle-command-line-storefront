@@ -18,8 +18,8 @@ import cmd, cx_Oracle, sys
 # functions
 
 def connectAndQuery(input):
-    _connstr = "wouldn't you like to know"
-    conn = cx_Oracle.connect(_connstr)
+    #_connstr = "wouldn't you like to know"
+conn = cx_Oracle.connect(_connstr)
     curs = conn.cursor()
     curs.execute(input)
     return curs.fetchall()
@@ -45,19 +45,28 @@ please type 'help' to explain your options
 
     prompt = """Please choose an option: """
 
-    def do_memberLogin(username,password):
+    def do_memberLogin(self,input):
         """
         Allows existing members to login
         format: memberLogin <username> <password>
         """
-        connectAndQuery(
-                        """SELECT userid, password 
-                        FROM members 
-                        WHERE userid = """
-                        + "'" + username + "'" +
-                        """AND password = """
-                        + "'" + password + "'"
-                        )
+        tpl = input.partition(" ")
+
+        if tpl[1]=="":
+            print "Invalid input."
+        else:
+            username = tpl[0]
+            password = tpl[2]
+
+        sql = """SELECT userid, password
+            FROM bs_members
+            WHERE userid = '%s'
+            AND password = '%s'""" % (username,password)
+
+        if connectAndQuery(sql) == tpl[1:2]:
+            print 'good job'
+        else:
+            print 'Username or password is incorrect please try again.'
 
     def do_newMemberRegistration(self, person):
         """Allows new members to register an account"""
