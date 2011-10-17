@@ -17,13 +17,18 @@ import cmd, cx_Oracle, sys
 
 # functions
 
-def connectAndQuery(input):
-    #_connstr = "wouldn't you like to know"
-    _connstr = 'jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman'
+def connectToDatabase(input,outputYorN):
+    _connstr = "wouldn't you like to know"
     conn = cx_Oracle.connect(_connstr)
     curs = conn.cursor()
     curs.execute(input)
-    return curs.fetchall()
+    if outputYorN == 'Y':
+        return curs.fetchall()
+    elif outputYorN == 'N':
+        pass
+    else:
+        print "Please use 'Y' or 'N' to decide the output"
+
 
 # classes
 
@@ -64,13 +69,14 @@ please type 'help' to explain your options
             WHERE userid = '%s'
             AND password = '%s'""" % (username,password)
 
-        if connectAndQuery(sql) == tpl[1:2]:
+        if connectToDatabase(sql, 'Y') == tpl[1:2]:
             print 'good job'
         else:
             print 'Username or password is incorrect please try again.'
 
+
     def do_newMemberRegistration(self,input):
-        """Allows new members to register an account"""
+        """Allows new members to register an account."""
         # this method should prompt the user for user information
         # after each prompt it should add the provided user data
         # to a new element of the same array.  when all the data is
@@ -80,16 +86,26 @@ please type 'help' to explain your options
         userData[0] = raw_input('Enter first name: ')
         userData[1] = raw_input('Enter last name: ')
         userData[2] = raw_input('Enter street address: ')
-        userData[3] = raw_input('Enter zip: ')
-        userData[4] = raw_input('Enter phone: ')
-        userData[5] = raw_input('Enter email address: ')
-        userData[6] = raw_input('Enter userID: ')
-        userData[7] = raw_input('Enter password: ')
-        userData[8] = raw_input('Enter type of Credit Card(amex/visa)')
-        userData[9] = raw_input('Enter credit card number:')
+        userData[3] = raw_input('Enter city: ')
+        userData[4] = raw_input('Enter state: ')
+        userData[5] = raw_input('Enter zip: ')
+        userData[6] = raw_input('Enter phone: ')
+        userData[7] = raw_input('Enter email address: ')
+        userData[8] = raw_input('Enter userID: ')
+        userData[9] = raw_input('Enter password: ')
+        userData[10] = raw_input('Enter type of Credit Card(amex/visa): ')
+        userData[11] = raw_input('Enter credit card number: ')
 
-        print userData
-         
+        userDatastr = ','.join(userData)
+        userDatastr = userDatastr.replace(',',"','")
+
+        sql = """ INSERT INTO bs_members
+            VALUES (""" + "'" + userDatastr + "'" + ")"
+
+        #print sql
+
+        connectToDatabase(sql, 'N')
+
 
     def do_quit(self, person):
         """Quits the program"""
