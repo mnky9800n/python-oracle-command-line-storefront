@@ -19,7 +19,8 @@ import cmd, cx_Oracle, sys
 
 def connectAndQuery(input):
     #_connstr = "wouldn't you like to know"
-conn = cx_Oracle.connect(_connstr)
+    _connstr = 'jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman'
+    conn = cx_Oracle.connect(_connstr)
     curs = conn.cursor()
     curs.execute(input)
     return curs.fetchall()
@@ -68,8 +69,11 @@ please type 'help' to explain your options
         else:
             print 'Username or password is incorrect please try again.'
 
-    def do_newMemberRegistration(self, person):
+    def do_newMemberRegistration(self,input):
         """Allows new members to register an account"""
+        print 'Name: '
+        name = raw_input(input)
+        return name     
 
     def do_quit(self, person):
         """Quits the program"""
@@ -126,6 +130,8 @@ class storeMenu(cmd.Cmd):
 
     def logOut():
         print "not yet"
+
+# program
 
 lm = loginMenu()
 sm = storeMenu()
