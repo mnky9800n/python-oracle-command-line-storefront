@@ -73,12 +73,23 @@ please type 'help' to explain your options
         """Allows new members to register an account"""
         # this method should prompt the user for user information
         # after each prompt it should add the provided user data
-        # to a new element of the same tuple.  when all the data is
-        # correct it will use INSERT INTO members VALUES (userTuple)
+        # to a new element of the same array.  when all the data is
+        # correct it will use INSERT INTO members VALUES (userData)
 
-        print 'Name: '
-        name = raw_input(input)
-        return name     
+        userData = ['firstName','lastName','street address','city','state','zip','phone','email','userID','password','creditcardtype','credit card number']
+        userData[0] = raw_input('Enter first name: ')
+        userData[1] = raw_input('Enter last name: ')
+        userData[2] = raw_input('Enter street address: ')
+        userData[3] = raw_input('Enter zip: ')
+        userData[4] = raw_input('Enter phone: ')
+        userData[5] = raw_input('Enter email address: ')
+        userData[6] = raw_input('Enter userID: ')
+        userData[7] = raw_input('Enter password: ')
+        userData[8] = raw_input('Enter type of Credit Card(amex/visa)')
+        userData[9] = raw_input('Enter credit card number:')
+
+        print userData
+         
 
     def do_quit(self, person):
         """Quits the program"""
