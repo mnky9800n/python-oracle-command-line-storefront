@@ -10,10 +10,7 @@
 # 4 -  logged in menu
 # 5 -  log out
 
-#from cx_Oracle import *
-
 import cmd, cx_Oracle, sys
-
 
 # functions
 
@@ -69,10 +66,14 @@ please type 'help' to explain your options
             WHERE userid = '%s'
             AND password = '%s'""" % (username,password)
 
-        if connectToDatabase(sql, 'Y') == tpl[1:2]:
+        connectAndCheck = connectToDatabase(sql, 'Y')
+
+        sql2 = """SELECT userid, password FROM bs_members"""
+
+        if connectAndCheck == tpl[1:2]:
             print 'good job'
         else:
-            print 'Username or password is incorrect please try again.'
+            print connectToDatabase(sql2,'Y')
 
 
     def do_newMemberRegistration(self,input):
@@ -99,8 +100,7 @@ please type 'help' to explain your options
         userDatastr = ','.join(userData)
         userDatastr = userDatastr.replace(',',"','")
 
-        sql = """ INSERT INTO bs_members
-            VALUES (""" + "'" + userDatastr + "'" + ")"
+        sql = """INSERT INTO bs_members VALUES (""" + "'" + userDatastr + "'" + ")"
 
         #print sql
 
