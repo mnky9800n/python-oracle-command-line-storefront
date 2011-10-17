@@ -71,6 +71,11 @@ please type 'help' to explain your options
 
     def do_newMemberRegistration(self,input):
         """Allows new members to register an account"""
+        # this method should prompt the user for user information
+        # after each prompt it should add the provided user data
+        # to a new element of the same tuple.  when all the data is
+        # correct it will use INSERT INTO members VALUES (userTuple)
+
         print 'Name: '
         name = raw_input(input)
         return name     
