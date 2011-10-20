@@ -16,7 +16,6 @@ import cmd, cx_Oracle, sys, re
 
 def connectToDatabase(input,outputYorN):
     #_connstr = "wouldn't you like to know"
-    
     conn = cx_Oracle.connect(_connstr)
     conn.autocommit = 1
     curs = conn.cursor()
@@ -101,47 +100,28 @@ please type 'help' to explain your options
         # correct it will use INSERT INTO members VALUES (userData)
         
         # regex = "'<regex>','<replace>'"        
-        regexstr = "'[\s\d][\s\d]*'"
-        replacestr = "''"
-        userFirstName = cleanNewMemberInfo('Enter first name: ',regexstr,replacestr)
-        userLastName = cleanNewMemberInfo('Enter last name: ',regexstr,replacestr)
+                userData = ['firstName','lastName','street address','city','state','zip','phone','email','userID','password','creditcardtype','credit card number']
 
-        regexstr = "'[\s\s*]'"
-        replacestr = ''
-        streetAddress = cleanNewMemberInfo('Enter street address: ',regexstr,replacestr)
+        # These all need to be wrapped in try/except to make sure the data entered is legitimate
 
-        regexstr = "'[\s\d][\s\d]*'"
-        replacestr = ''
-        userCity = cleanNewMemberInfo('Enter city: ',regexstr,replacestr)
-        userState = cleanNewMemberInfo('Enter state: ',regexstr,replacestr)
-
-        regexstr = "'[\s\D]*'"
-        replacestr = ''
-        userZip = cleanNewMemberInfo('Enter zip code: ',regexstr,replacestr)
-        regexstr = "'[\s\D-]*'"
-        userPhone = cleanNewMemberInfo('Enter phone: ',regexstr,replacestr)
-        regexstr = "'[\s\d][\s\d]*'"
-        userEmail = cleanNewMemberInfo('Enter email: ',regexstr,replacestr)
-        userID = cleanNewMemberInfo('Enter userID: ',regexstr,replacestr)
-        userPassword = cleanNewMemberInfo('Enter password: ',regexstr,replacestr)
-
-        while True:
-            try:
-                userInput = raw_input("Do you want to store credit card information(y/n): ')
-                # regexstr, replacestr
-                userCreditType = cleanNewMemberInfo('Enter type of credit card(amex/visa): ',regexstr,replacestr)
-                # regexstr, replacestr
-                try:
-                    userCreditCardNumber = cleanNewMemberInfo('Enter credit card number: ',regexstr,replacestr)
-                    # regex that counts for 15 digits /^([\d]*){16}
-
-
-            except userInput != 'y':
-                break
-
-
-
-        print userFirstName + userLastName + streetAddress
+        #TODO - replace raw_input with cleanNewMemberInfo(inputRequest,regex,replace)
+        userData[0] = raw_input('Enter first name: ')
+        userData[1] = raw_input('Enter last name: ')
+        userData[2] = raw_input('Enter street address: ')
+        userData[3] = raw_input('Enter city: ')
+        userData[4] = raw_input('Enter state: ')
+        userData[5] = raw_input('Enter zip code: ')
+        userData[5] = raw_input('Enter zip code: ')
+        userData[6] = raw_input('Enter phone: ')
+        userData[7] = raw_input('Enter email address: ')
+        userData[8] = raw_input('Enter userID: ')
+        userData[9] = raw_input('Enter password: ')
+        userData[10] = raw_input('Enter type of Credit Card(amex/visa): ')
+        userData[11] = raw_input('Enter credit card number: ')
+        
+        #TODO - convert userData from list into string
+        #TODO - regex to change data so that it enters into database as appropriate type
+        #TODO - INSERT INTO members VALUES (userDataStr)
 
     def do_quit(self, person):
         """Quits the program"""
