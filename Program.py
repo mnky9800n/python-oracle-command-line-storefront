@@ -16,6 +16,7 @@ import cmd, cx_Oracle, sys, re
 
 def connectToDatabase(input,outputYorN):
     #_connstr = "wouldn't you like to know"
+    
     conn = cx_Oracle.connect(_connstr)
     conn.autocommit = 1
     curs = conn.cursor()
@@ -100,7 +101,7 @@ please type 'help' to explain your options
         # correct it will use INSERT INTO members VALUES (userData)
         
         # regex = "'<regex>','<replace>'"        
-                userData = ['firstName','lastName','street address','city','state','zip','phone','email','userID','password','creditcardtype','credit card number']
+        userData = ['firstName','lastName','street address','city','state','zip','phone','email','userID','password','creditcardtype','credit card number']
 
         # These all need to be wrapped in try/except to make sure the data entered is legitimate
 
@@ -111,7 +112,6 @@ please type 'help' to explain your options
         userData[3] = raw_input('Enter city: ')
         userData[4] = raw_input('Enter state: ')
         userData[5] = raw_input('Enter zip code: ')
-        userData[5] = raw_input('Enter zip code: ')
         userData[6] = raw_input('Enter phone: ')
         userData[7] = raw_input('Enter email address: ')
         userData[8] = raw_input('Enter userID: ')
@@ -120,6 +120,16 @@ please type 'help' to explain your options
         userData[11] = raw_input('Enter credit card number: ')
         
         #TODO - convert userData from list into string
+        userDataStr = "'" + "','".join(userData) + "'"
+        zipCodeRE = re.compile("([,'\s]r\b[\d][\d][\d][\d][\d]\b)")
+        zipSearch = re.search(zipCodeRE, userDataStr)
+        while True:
+            try:
+                zipSearch != None
+                break
+            except ValueError:
+                print "You did not enter a correct zip code please try again"
+                userData[5] = raw_input('Enter zip code: ')
         #TODO - regex to change data so that it enters into database as appropriate type
         #TODO - INSERT INTO members VALUES (userDataStr)
 
