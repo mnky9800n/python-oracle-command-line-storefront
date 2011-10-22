@@ -22,6 +22,12 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="helpers.py" />
+    <Compile Include="menus.py" />
     <Compile Include="Program.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="helpers.pyc" />
+    <Content Include="readme.txt" />
   </ItemGroup>
 </Project>
