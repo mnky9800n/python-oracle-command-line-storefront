@@ -5,16 +5,15 @@
 import cx_Oracle, re
 
 class gatherer:
-    def validInput(self, input, regEx):
+            
+    def getInput(self,prompt,regEx):
         validate = re.compile(regEx)
-        result = validate.match(input)
-        return result
-             
-    def getInput(self,prompt,regExValidator):
-            input = raw_input(prompt)
+        input = raw_input(prompt)
+        input.strip()
+        while validate.match(input)==None:
+            input = raw_input("Invalid input, try again:")
             input.strip()
-            while self.validInput(input,regExValidator)==None:
-                input = raw_input("Invalid input, try again:")
+        return input
 
 #    def getNumber(self, prompt):
 #        return = getInput(prompt,"\d+")
