@@ -4,6 +4,8 @@
                                
 import cx_Oracle, re
 
+
+
 class gatherer:
             
     def getInput(self,prompt,regEx):
@@ -29,8 +31,8 @@ class dataSet:
     def __init__(self, connectionString, debug=False):
         if debug:
             print "You're using Oracle Client Tools v" + ".".join(map(str,cx_Oracle.clientversion()))
-
         self._conn = cx_Oracle.connect(connectionString)
+        self._conn.autocommit = True
         self._curs = self._conn.cursor()
         self.fetchall = self._curs.fetchall
         self.description = self._curs.description
@@ -50,7 +52,10 @@ class dataSet:
             self._curs.execute(statement,parameters)
 
     #Creates a dictionary of column names and positions.
-        self.columns = dict((field[0], pos) for pos, field in enumerate(self._curs.description))
+        if self._curs.description != None:
+            self.columns = dict((field[0], pos) for pos, field in enumerate(self._curs.description))
+        else:
+            self.columns = None
    
     #Returns the column names of the last executed query as an ordered list
     def columnNames(self):

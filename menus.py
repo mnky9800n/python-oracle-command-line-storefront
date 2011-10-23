@@ -99,6 +99,9 @@ please type 'help' to explain your options
         if creditCardYN == 'y':
             newUser.CCtype = ga.getInput('Enter credit card type (amex/visa): ',"(amex|visa)")
             newUser.CCnumber = ga.getInput('Enter credit card number: ', "\d{16}")
+        else:
+            newUser.CCtype = None
+            newUser.CCnumber = None
                    
         userDataSql = 'INSERT INTO bs_members VALUES ( :fname, :lname, :street, :city, :state, :zip, :phone, :email, :userID, :password, :cardtype, :cardnumber)'
         ds.execute(userDataSql, fname=newUser.fname, lname=newUser.lname, street=newUser.streetAddress, city=newUser.city, state=newUser.state, zip=newUser.zipCode, phone=newUser.phoneNumber, email=newUser.email, userID=newUser.userID, password=newUser.password, cardtype=newUser.CCtype, cardnumber=newUser.CCnumber)
