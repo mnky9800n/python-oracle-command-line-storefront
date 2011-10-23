@@ -1,38 +1,29 @@
 
 
 
-							   
+                               
 import cx_Oracle, re
 
 class gatherer:
-	def validInput(self, input, regEx):
-		validate = re.compile(regEx)
-		while True:
-			try:
-				#result = validate.search(input)
-				result = validate.match(input)
-				break
-			except ValueError:
-				print 'This is incorrect, try again.'
-	def getInput(self,prompt,regExValidator):
-		while True:
-			try:
-				input = raw_input(prompt)
-				input.strip()
-				return input
-				break
-			except not validInput(input, regExValidator):
-				input = raw_input("Invalid input, try again:")
+    def validInput(self, input, regEx):
+        validate = re.compile(regEx)
+        result = validate.match(input)
+        return result
+             
+    def getInput(self,prompt,regExValidator):
+            input = raw_input(prompt)
+            input.strip()
+            while self.validInput(input,regExValidator)==None:
+                input = raw_input("Invalid input, try again:")
 
-
-#	def getNumber(self, prompt):
-#		return = getInput(prompt,"\d+")
+#    def getNumber(self, prompt):
+#        return = getInput(prompt,"\d+")
 #
-#	def getZip(self, prompt):
-#		return = getInput(prompt,"\d{5}(-\d{4})?")
+#    def getZip(self, prompt):
+#        return = getInput(prompt,"\d{5}(-\d{4})?")
 #
-#	def getSSN(self, prompt):
-#		return = getInput(prompt,"\d{3}-\d{2}-\d{5965}")
+#    def getSSN(self, prompt):
+#        return = getInput(prompt,"\d{3}-\d{2}-\d{5965}")
 
 
 class dataSet:

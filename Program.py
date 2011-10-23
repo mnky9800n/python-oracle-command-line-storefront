@@ -16,8 +16,6 @@ import cmd, cx_Oracle, sys, re
 
 # program
 
-ds = dataSet("jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman")
-
 lm = loginMenu()
 sm = storeMenu()
 
