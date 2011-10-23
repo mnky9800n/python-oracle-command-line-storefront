@@ -5,8 +5,11 @@ from menus import *
 import cmd, cx_Oracle, sys, re
 
 
-
 ga = gatherer()
+
+#functions
+
+#classes
 
 class loginMenu(cmd.Cmd):
     intro = """
@@ -77,32 +80,28 @@ please type 'help' to explain your options
         #creditcard yes/no (y|n)
         #creditcard type (amex|visa)
         #creditcard number \d{16}
-        userData = ['fname','lname','streetAddress','city','st','phone','zip','email','userID','password','CCtype','CC#']
-        userData[0] = ga.getInput('Enter first name: ', "([a-zA-Z][a-zA-Z]*)")
-        userData[1] = ga.getInput('Enter last name: ', "([a-zA-Z][a-zA-Z]*)")
-        userData[2] = ga.getInput('Enter street address: ', "[\w\s]+")
-        userData[3] = ga.getInput('Enter city: ', "[a-zA-Z]+$")
-        userData[4] = ga.getInput('Enter state abbreviation: ', "\w{2}")
-        userData[5] = ga.getInput('Enter zip code: ', "(^\d{5}$)|(^\d{5}-\d{4}$)")
-        userData[6] = ga.getInput('Enter phone number: ', "(\d{3})[-.]?(\d{3})[-.]?(\d{4})")
-        userData[7] = ga.getInput('Enter email: ', "\w+@\w+\.\w+$")
-        userData[8] = ga.getInput('Enter userID: ', "\w+$")
-        userData[9] = ga.getInput('Enter password: ', "\w{8}\w*")
 
+        class userData:
+            pass
+
+        newUser = userData()
+        newUser.fname = ga.getInput('Enter first name: ', "[a-zA-Z ']+")
+        newUser.lname = ga.getInput('Enter last name: ', "[a-zA-Z ']+")
+        newUser.streetAddress = ga.getInput('Enter street address: ', "[\w\s]+")
+        newUser.city = ga.getInput('Enter city: ', "[a-zA-Z]+$")
+        newUser.state = ga.getInput('Enter state abbreviation: ', "\w{2}")
+        newUser.zipCode = ga.getInput('Enter zip code: ', "^\d{5}(-\d{4})?$")
+        newUser.phoneNumber = ga.getInput('Enter phone number: ', "(\d{3})[-.]?(\d{3})[-.]?(\d{4})")
+        newUser.email = ga.getInput('Enter email: ', "\w+@\w+\.\w+$")
+        newUser.userID = ga.getInput('Enter userID: ', "\w+$")
+        newUser.password = ga.getInput('Enter password: ', "\w{8}\w*")
         creditCardYN = ga.getInput('Do you want to store credit card information (y or n): ', "(y|n)")
         if creditCardYN == 'y':
-            userData[10] = ga.getInput('Enter credit card type (amex/visa): ',"(amex|visa)")
-            userData[11] = ga.getInput('Enter credit card number: ', "\d{16}")
-        else:
-            userData[10] = 'null'
-            userData[11] = 'null'
-
-        userDataStr = "'"+"','".join(userData)+"'"
-
-        userDataSql = 'INSERT INTO bs_members VALUES ( :user )'
-        ds.execute(userDataSql,user=userDataStr)
-
-        #TODO - INSERT INTO members VALUES (userDataStr)
+            newUser.CCtype = ga.getInput('Enter credit card type (amex/visa): ',"(amex|visa)")
+            newUser.CCnumber = ga.getInput('Enter credit card number: ', "\d{16}")
+                   
+        userDataSql = 'INSERT INTO bs_members VALUES ( :fname, :lname, :street, :city, :state, :zip, :phone, :email, :userID, :password, :cardtype, :cardnumber)'
+        ds.execute(userDataSql, fname=newUser.fname, lname=newUser.lname, street=newUser.streetAddress, city=newUser.city, state=newUser.state, zip=newUser.zipCode, phone=newUser.phoneNumber, email=newUser.email, userID=newUser.userID, password=newUser.password, cardtype=newUser.CCtype, cardnumber=newUser.CCnumber)
 
     def do_quit(self, person):
         """Quits the program"""
