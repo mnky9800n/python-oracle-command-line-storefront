@@ -20,11 +20,11 @@ class loginMenu(cmd.Cmd):
 ***                                                                ***
 **********************************************************************
 
-                         1. Member Login
+                         1. memberLogin
 
-                         2. New Member Registration
+                         2. newMemberRegistration
 
-                         q. Quit
+                         3. quit
 
 type 'help' to list available commands.
 """
@@ -34,7 +34,7 @@ type 'help' to list available commands.
     def do_printMenu(self,person):
         """
         Prints main menu.
-        format: printMenu
+        format: printMenu <no args>
         """
         print """
 **********************************************************************
@@ -56,7 +56,7 @@ type 'help' to list available commands.
         """
         Lists open membership userID's.
         This will be removed in later versions.
-        format: openMemberships
+        format: openMemberships <no args>
         """
         ds.execute('SELECT userID FROM bs_members')
         rowCount = 0
@@ -90,15 +90,15 @@ type 'help' to list available commands.
             if ' '.join(row) == tplStr:
                 #TODO - this should pass the logged in user info to something 
                 #       the storeMenu class can use.
-                sys.exit
-            print 'Incorrect userID or password.  Please try again.'
+                return True
+        print 'Incorrect userID or password.  Please try again.'
 
     def do_newMemberRegistration(self,input):
         """
         Allows new members to register an account.
         Users will be prompted with a series of questions to acquire
         accurate and complete account information.
-        format: newMemberRegistration
+        format: newMemberRegistration <no args>
         """
 
         class userData:
@@ -144,11 +144,10 @@ type 'help' to list available commands.
 
     def do_quit(self, person):
         """
-        Quits the program
-        format: quit
+        Quits the program.
+        format: quit <no args>
         """
-        self.quit = True
-        return quit, sys.exit
+        sys.exit()
 
 class storeMenu(cmd.Cmd):
 
@@ -173,13 +172,18 @@ class storeMenu(cmd.Cmd):
 
                      7. View/Edit Personal Information
 
-                     8. Logout
+                     8. logOut
  
 type 'help' to list available commands.
 """
     prompt = """Please choose an option: """
-    def do_logOut():
+    def do_logOut(self,person):
+        """
+        Logs user out and returns them to the 
+        login menu.
+        format: logOut <no args>
+        """
         #TODO - this should obliterate any logged in info kept 
         #       to access the db with.  It should also return
         #       the user to the login menu
-        print "not yet"
+        return True

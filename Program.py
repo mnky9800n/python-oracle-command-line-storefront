@@ -9,7 +9,6 @@ from helpers import *
 from menus import *
 import cmd, cx_Oracle, sys, re
 
-
 # functions
 
 # classes
@@ -23,6 +22,15 @@ sm = storeMenu()
 # be used.
 #
 
+while True:
+    while lm.cmdloop()==True:
+        pass
+    while sm.cmdloop()==True:
+        pass
+
+# This is the original loop and has been commented out
+""" 
+
 quit = False
 
 while True:
@@ -32,3 +40,6 @@ while True:
         break
 while quit == False:
     sm.cmdloop()
+
+
+"""

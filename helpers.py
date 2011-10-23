@@ -4,8 +4,6 @@
                                
 import cx_Oracle, re
 
-
-
 class gatherer:
             
     def getInput(self,prompt,regEx):
