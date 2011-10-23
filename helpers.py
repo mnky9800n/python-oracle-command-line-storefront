@@ -56,7 +56,7 @@ class dataSet:
             self.columns = dict((field[0], pos) for pos, field in enumerate(self._curs.description))
         else:
             self.columns = None
-   
+
     #Returns the column names of the last executed query as an ordered list
     def columnNames(self):
         import operator

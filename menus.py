@@ -25,19 +25,47 @@ class loginMenu(cmd.Cmd):
 
                          q. Quit
 
-please type 'help' to explain your options
+type 'help' to list available commands.
 """
-
     prompt = """Please choose an option: """
 
-    def do_openMemberships(self,person):
+    def do_printMenu(self,person):
+        """
+        Prints main menu.
+        format: printMenu
+        """
+        print """
+**********************************************************************
+***                                                                ***
+***             Welcome to the Online Book Store                   ***
+***                                                                ***
+**********************************************************************
 
-        sql = 'SELECT * from bs_members'
-        print connectToDatabase(sql, 'Y')
+                         1. Member Login
+
+                         2. New Member Registration
+
+                         q. Quit
+
+type 'help' to list available commands.
+"""
+
+    def do_openMemberships(self,person):
+        """
+        Lists open membership userID's.
+        This will be removed in later versions.
+        format: openMemberships
+        """
+        ds.execute('SELECT userID FROM bs_members')
+        rowCount = 0
+        for row in ds:
+            rowCount+=1
+            print row
+
 
     def do_memberLogin(self,input):
         """
-        Allows existing members to login
+        Allows existing members to login.
         format: memberLogin <username> <password>
         """
         tpl = input.partition(" ")
@@ -50,36 +78,28 @@ please type 'help' to explain your options
 
         sql = """SELECT userid, password
             FROM bs_members
-            WHERE userid = '%s'
-            AND password = '%s'""" % (username,password)
+            WHERE userid = :userid
+            AND password = :pword"""
 
-        connectAndCheck = ds.execute(sql)
+        connectAndCheck = ds.execute(sql, userid=username,pword=password)
+        tplStr = ''.join(tpl)
 
-        if connectAndCheck == tpl[1:2]:
-            print 'good job'
-        else:
-            print connectAndCheck
+        for row in ds:
+            if ' '.join(row) == tplStr:
+                #TODO - this should pass the logged in user info to something 
+                #       the storeMenu class can use.
+                sys.exit
+            print 'Incorrect userID or password.  Please try again.'               
+
 
 
     def do_newMemberRegistration(self,input):
-        """Allows new members to register an account."""
-        # this method should prompt the user for user information
-        # after each prompt it should add the provided user data
-        # to a new element of the same array.  when all the data is
-        # correct it will use INSERT INTO members VALUES (userData)
-
-        #TODO
-        #street address (\d+)\s((\w)+\s)+
-        #city [a-zA-Z]+
-        #state \w{2}
-        #zip (^\d{5}$)|(^\d{5}-\d{4}$)
-        #phone (\d{3})[-.]?(\d{3})[-.]?(\d{4})
-        #email \w+@\w\.\w$
-        #userID \w+$
-        #password \w{8}+
-        #creditcard yes/no (y|n)
-        #creditcard type (amex|visa)
-        #creditcard number \d{16}
+        """
+        Allows new members to register an account.
+        Users will be prompted with a series of questions to acquire
+        accurate and complete account information.
+        format: newMemberRegistration
+        """
 
         class userData:
             pass
@@ -104,18 +124,38 @@ please type 'help' to explain your options
             newUser.CCnumber = None
                    
         userDataSql = 'INSERT INTO bs_members VALUES ( :fname, :lname, :street, :city, :state, :zip, :phone, :email, :userID, :password, :cardtype, :cardnumber)'
+
+        print 'You have registered successfully.'
+        print 'Name:                                '+newUser.fname+' '+newUser.lname
+        print 'Address:                             '+newUser.streetAddress
+        print 'City:                                '+newUser.city
+        print 'Phone:                               '+newUser.phoneNumber
+        print 'Email:                               '+newUser.phoneNumber
+        print 'UserID:                              '+newUser.userID
+        print 'Password:                            '+newUser.password
+        if newUser.CCtype == None and newUser.CCnumber == None:
+            pass
+        else:
+            print 'Credit card type:                    '+newUser.CCtype
+            print 'Credit card number:                  '+newUser.CCnumber
+
         ds.execute(userDataSql, fname=newUser.fname, lname=newUser.lname, street=newUser.streetAddress, city=newUser.city, state=newUser.state, zip=newUser.zipCode, phone=newUser.phoneNumber, email=newUser.email, userID=newUser.userID, password=newUser.password, cardtype=newUser.CCtype, cardnumber=newUser.CCnumber)
 
+
     def do_quit(self, person):
-        """Quits the program"""
-        return sys.exit
+        """
+        Quits the program
+        format: quit
+        """
+        self.quit = True
+        return quit, sys.exit
 
 class storeMenu(cmd.Cmd):
 
     intro = """**********************************************************************
 ***                                                                ***
-***                       Welcome to Online Book Store             ***
-***                            Member Menu                         ***
+***                  Welcome to Online Book Store                  ***
+***                          Member Menu                           ***
 ***                                                                ***
 **********************************************************************
 
@@ -133,7 +173,13 @@ class storeMenu(cmd.Cmd):
 
                      7. View/Edit Personal Information
 
-                     8. Logout"""
-
-    def logOut():
+                     8. Logout
+ 
+type 'help' to list available commands.
+"""
+    prompt = """Please choose an option: """
+    def do_logOut():
+        #TODO - this should obliterate any logged in info kept 
+        #       to access the db with.  It should also return
+        #       the user to the login menu
         print "not yet"

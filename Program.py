@@ -19,5 +19,12 @@ import cmd, cx_Oracle, sys, re
 lm = loginMenu()
 sm = storeMenu()
 
-print lm.cmdloop()
+# this needs to check if lm should be used or sm should
+# be used.
+#
 
+while True:
+    lm.cmdloop()
+    if lm.do_quit.quit==True:
+        sys.exit()
+    sm.cmdloop()
