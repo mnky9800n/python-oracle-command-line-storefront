@@ -12,6 +12,7 @@ ga = gatherer()
 #classes
 
 class loginMenu(cmd.Cmd):
+
     intro = """
 **********************************************************************
 ***                                                                ***
@@ -28,6 +29,7 @@ class loginMenu(cmd.Cmd):
 type 'help' to list available commands.
 """
     prompt = """Please choose an option: """
+
 
     def do_printMenu(self,person):
         """
@@ -89,9 +91,7 @@ type 'help' to list available commands.
                 #TODO - this should pass the logged in user info to something 
                 #       the storeMenu class can use.
                 sys.exit
-            print 'Incorrect userID or password.  Please try again.'               
-
-
+            print 'Incorrect userID or password.  Please try again.'
 
     def do_newMemberRegistration(self,input):
         """

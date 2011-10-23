@@ -23,8 +23,12 @@ sm = storeMenu()
 # be used.
 #
 
+quit = False
+
 while True:
     lm.cmdloop()
-    if lm.do_quit.quit==True:
-        sys.exit()
+    if ga.getInput('Are you sure you want to exit (type y or n): ', "(y|n)") == 'y':
+        quit = True
+        break
+while quit == False:
     sm.cmdloop()
