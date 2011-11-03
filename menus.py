@@ -5,6 +5,7 @@ from menus import *
 import cmd, cx_Oracle, sys, re
 
 
+ds = dataSet("jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman")
 ga = gatherer()
 
 #functions
@@ -70,28 +71,32 @@ type 'help' to list available commands.
         Allows existing members to login.
         format: memberLogin <username> <password>
         """
+
         tpl = input.partition(" ")
 
         if tpl[1]=="":
-            print "Invalid input."
+            print """
+Incorrect syntax for memberLogin.
+format: memberLogin <username> <password>
+"""
         else:
             username = tpl[0]
             password = tpl[2]
 
-        sql = """SELECT userid, password
-            FROM bs_members
-            WHERE userid = :userid
-            AND password = :pword"""
+            sql = """SELECT userid, password
+                FROM bs_members
+                WHERE userid = :userid
+                AND password = :pword"""
 
-        connectAndCheck = ds.execute(sql, userid=username,pword=password)
-        tplStr = ''.join(tpl)
+            connectAndCheck = ds.execute(sql, userid=username,pword=password)
+            tplStr = ''.join(tpl)
 
-        for row in ds:
-            if ' '.join(row) == tplStr:
-                #TODO - this should pass the logged in user info to something 
-                #       the storeMenu class can use.
-                return True
-        print 'Incorrect userID or password.  Please try again.'
+            for row in ds:
+                if ' '.join(row) == tplStr:
+                    #TODO - this should pass the logged in user info to something 
+                    #       the storeMenu class can use.
+                    return True
+            print 'Incorrect userID or password.  Please try again.'
 
     def do_newMemberRegistration(self,input):
         """
@@ -105,20 +110,20 @@ type 'help' to list available commands.
             pass
 
         newUser = userData()
-        newUser.fname = ga.getInput('Enter first name: ', "[a-zA-Z ']+")
-        newUser.lname = ga.getInput('Enter last name: ', "[a-zA-Z ']+")
-        newUser.streetAddress = ga.getInput('Enter street address: ', "[\w\s]+")
-        newUser.city = ga.getInput('Enter city: ', "[a-zA-Z]+$")
-        newUser.state = ga.getInput('Enter state abbreviation: ', "\w{2}")
+        newUser.fname = ga.getInput('Enter first name: ', "[a-zA-Z ']+$")  #o'neill
+        newUser.lname = ga.getInput('Enter last name: ', "[a-zA-Z ']+$")
+        newUser.streetAddress = ga.getInput('Enter street address: ', "[\w\s]+$")
+        newUser.city = ga.getInput('Enter city: ', "[a-zA-Z ']+$")
+        newUser.state = ga.getInput('Enter state abbreviation: ', "\w{2}$")
         newUser.zipCode = ga.getInput('Enter zip code: ', "^\d{5}(-\d{4})?$")
-        newUser.phoneNumber = ga.getInput('Enter phone number: ', "(\d{3})[-.]?(\d{3})[-.]?(\d{4})")
+        newUser.phoneNumber = ga.getInput('Enter phone number: ', "(\d{3})[-.]?(\d{3})[-.]?(\d{4})$")
         newUser.email = ga.getInput('Enter email: ', "\w+@\w+\.\w+$")
         newUser.userID = ga.getInput('Enter userID: ', "\w+$")
-        newUser.password = ga.getInput('Enter password: ', "\w{8}\w*")
-        creditCardYN = ga.getInput('Do you want to store credit card information (y or n): ', "(y|n)")
+        newUser.password = ga.getInput('Enter password: ', "\w{8}\w*$")
+        creditCardYN = ga.getInput('Do you want to store credit card information (y or n): ', "(y|n)$")
         if creditCardYN == 'y':
-            newUser.CCtype = ga.getInput('Enter credit card type (amex/visa): ',"(amex|visa)")
-            newUser.CCnumber = ga.getInput('Enter credit card number: ', "\d{16}")
+            newUser.CCtype = ga.getInput('Enter credit card type (amex/visa): ',"(amex|visa)$")
+            newUser.CCnumber = ga.getInput('Enter credit card number: ', "\d{16}$")
         else:
             newUser.CCtype = None
             newUser.CCnumber = None

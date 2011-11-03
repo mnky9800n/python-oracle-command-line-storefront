@@ -28,18 +28,3 @@ while True:
     while sm.cmdloop()==True:
         pass
 
-# This is the original loop and has been commented out
-""" 
-
-quit = False
-
-while True:
-    lm.cmdloop()
-    if ga.getInput('Are you sure you want to exit (type y or n): ', "(y|n)") == 'y':
-        quit = True
-        break
-while quit == False:
-    sm.cmdloop()
-
-
-"""
