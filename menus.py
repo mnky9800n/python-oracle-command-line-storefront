@@ -5,7 +5,6 @@ from menus import *
 import cmd, cx_Oracle, sys, re
 
 """starfleet is not in charge"""
-ds = dataSet("jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman")
 ga = gatherer()
 
 #functions
@@ -118,7 +117,25 @@ format: memberLogin <username> <password>
         newUser.zipCode = ga.getInput('Enter zip code: ', "^\d{5}(-\d{4})?$")
         newUser.phoneNumber = ga.getInput('Enter phone number: ', "(\d{3})[-.]?(\d{3})[-.]?(\d{4})$")
         newUser.email = ga.getInput('Enter email: ', "\w+@\w+\.\w+$")
-        newUser.userID = ga.getInput('Enter userID: ', "\w+$")
+        
+        checkSql = 'SELECT userid FROM bs_members WHERE userid = :checkUser'
+        while True:
+            newUser.userID = ga.getInput('Enter userID: ', "\w+$")
+            ds.execute(checkSql,checkUser=newUser.userID)
+            for row in ds:
+                if row[0] == newUser.userID:
+                    print 'That user name is already in use.  Please enter a new username.'
+                    break
+            else:
+                break
+
+
+#            try:
+#                ds.execute(check.sql,userid=check.user) == None
+#                break
+#            except DatabaseError:
+#                print 'That user name is already in use.  Please enter a new username.'
+
         newUser.password = ga.getInput('Enter password: ', "\w{8}\w*$")
         creditCardYN = ga.getInput('Do you want to store credit card information (y or n): ', "(y|n)$")
         if creditCardYN == 'y':
