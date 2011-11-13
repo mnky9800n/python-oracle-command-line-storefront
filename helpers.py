@@ -7,6 +7,9 @@ import cx_Oracle, re
 class gatherer:
             
     def getInput(self,prompt,regEx):
+        """
+        get's input from user and validates it against a regular expression
+        """
         validate = re.compile(regEx)
         input = raw_input(prompt)
         input.strip()
@@ -14,16 +17,6 @@ class gatherer:
             input = raw_input("Invalid input, try again:")
             input.strip()
         return input
-
-#    def getNumber(self, prompt):
-#        return = getInput(prompt,"\d+")
-#
-#    def getZip(self, prompt):
-#        return = getInput(prompt,"\d{5}(-\d{4})?")
-#
-#    def getSSN(self, prompt):
-#        return = getInput(prompt,"\d{3}-\d{2}-\d{5965}")
-
 
 class dataSet:
     def __init__(self, connectionString, debug=False):

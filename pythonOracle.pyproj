@@ -22,6 +22,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="browse.py" />
     <Compile Include="helpers.py" />
     <Compile Include="menus.py" />
     <Compile Include="Program.py" />

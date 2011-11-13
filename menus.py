@@ -2,10 +2,14 @@
 
 from helpers import *
 from menus import *
+#from browse import *
+
 import cmd, cx_Oracle, sys, re
 
-"""starfleet is not in charge"""
 ga = gatherer()
+
+#variables
+user = 'No user'
 
 #functions
 
@@ -81,7 +85,6 @@ format: memberLogin <username> <password>
         else:
             username = tpl[0]
             password = tpl[2]
-
             sql = """SELECT userid, password
                 FROM bs_members
                 WHERE userid = :userid
@@ -94,7 +97,8 @@ format: memberLogin <username> <password>
                 if ' '.join(row) == tplStr:
                     #TODO - this should pass the logged in user info to something 
                     #       the storeMenu class can use.
-                    return True
+                    user = username
+                    return (True,user)
             print 'Incorrect userID or password.  Please try again.'
 
     def do_newMemberRegistration(self,input):
@@ -197,7 +201,7 @@ class storeMenu(cmd.Cmd):
                      8. logOut
  
 type 'help' to list available commands.
-"""
+""" + "Logged in as: " + user
     prompt = """Please choose an option: """
     def do_logOut(self,person):
         """
@@ -209,3 +213,5 @@ type 'help' to list available commands.
         #       to access the db with.  It should also return
         #       the user to the login menu
         return True
+
+#    def do_Browse(self,person):
