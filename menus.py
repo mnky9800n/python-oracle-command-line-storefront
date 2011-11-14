@@ -6,7 +6,6 @@ from menus import *
 
 import cmd, cx_Oracle, sys, re
 
-ds = dataSet("jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman")
 ga = gatherer()
 
 #variables
