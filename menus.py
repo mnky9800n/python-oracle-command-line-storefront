@@ -6,16 +6,19 @@ from menus import *
 
 import cmd, cx_Oracle, sys, re
 
+ds = dataSet("jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman")
 ga = gatherer()
 
 #variables
-user = 'No user'
 
 #functions
 
 #classes
 
 class loginMenu(cmd.Cmd):
+
+    def postloop():
+        print 'You have logged in as: ' + username
 
     intro = """
 **********************************************************************
@@ -70,6 +73,7 @@ type 'help' to list available commands.
 
 
     def do_memberLogin(self,input):
+        global username
         """
         Allows existing members to login.
         format: memberLogin <username> <password>
@@ -89,7 +93,7 @@ format: memberLogin <username> <password>
                 FROM bs_members
                 WHERE userid = :userid
                 AND password = :pword"""
-
+            
             connectAndCheck = ds.execute(sql, userid=username,pword=password)
             tplStr = ''.join(tpl)
 
@@ -97,8 +101,7 @@ format: memberLogin <username> <password>
                 if ' '.join(row) == tplStr:
                     #TODO - this should pass the logged in user info to something 
                     #       the storeMenu class can use.
-                    user = username
-                    return (True,user)
+                    return True
             print 'Incorrect userID or password.  Please try again.'
 
     def do_newMemberRegistration(self,input):
@@ -201,7 +204,7 @@ class storeMenu(cmd.Cmd):
                      8. logOut
  
 type 'help' to list available commands.
-""" + "Logged in as: " + user
+""" + "Logged in as: " + username
     prompt = """Please choose an option: """
     def do_logOut(self,person):
         """
