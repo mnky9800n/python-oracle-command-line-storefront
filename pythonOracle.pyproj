@@ -23,6 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="browse.py" />
+    <Compile Include="checkout.py" />
     <Compile Include="helpers.py" />
     <Compile Include="menus.py" />
     <Compile Include="Program.py" />

@@ -1,8 +1,9 @@
 
 
-from helpers import *
-from menus import *
-#from browse import *
+#from helpers import *
+#from menus import *
+from browse import *
+from checkout import *
 
 import cmd, cx_Oracle, sys, re
 
@@ -16,7 +17,7 @@ ga = gatherer()
 
 class loginMenu(cmd.Cmd):
 
-    def postloop():
+    def postloop(self):
         print 'You have logged in as: ' + username
 
     intro = """
@@ -73,6 +74,7 @@ type 'help' to list available commands.
 
     def do_memberLogin(self,input):
         global username
+        username = 'no one'
         """
         Allows existing members to login.
         format: memberLogin <username> <password>
@@ -177,7 +179,13 @@ format: memberLogin <username> <password>
         """
         sys.exit()
 
+
+b = Browse()
+c = checkOut()
+
 class storeMenu(cmd.Cmd):
+    global username
+
 
     intro = """**********************************************************************
 ***                                                                ***
@@ -203,17 +211,51 @@ class storeMenu(cmd.Cmd):
                      8. logOut
  
 type 'help' to list available commands.
-""" + "Logged in as: " + username
-    prompt = """Please choose an option: """
+"""
+    prompt = "Please choose an option: "
     def do_logOut(self,person):
         """
         Logs user out and returns them to the 
         login menu.
         format: logOut <no args>
         """
+        global username
         #TODO - this should obliterate any logged in info kept 
         #       to access the db with.  It should also return
         #       the user to the login menu
+        print """
+        goodbye """ + username +"""
+        """
+        username = ''
         return True
 
-#    def do_Browse(self,person):
+    def do_whoami(self,person):
+        """
+        Prints username.
+        format: whoami <no args>
+        """
+        print username
+
+    def do_browseSubjects(self,person):
+        #global username
+        """
+        Lists different book subjects.
+        format: browseSubjects <no args>
+        """
+        b.listSubjects()
+        b.printBooksInSubject(ga.getInput("Choose a subject: ","\w+$"),username)
+
+    def do_printCart(self,person):
+        """
+        Displays cart.
+        format: printCart <no args>
+        """
+        b.printCart(username)
+
+    def do_oneClickCheckout(self,user):
+        user=username
+        """
+        Purchases all items in cart with one action.  Cart contents will be shipped to address on file.
+        format: oneClickCheckout <no args>
+        """
+        c.oneClick(user)
