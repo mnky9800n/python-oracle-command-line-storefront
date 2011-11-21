@@ -2,6 +2,7 @@
 from helpers import *
 from menus import *
 
+ds = dataSet("jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman")
 ga = gatherer()
 
 class checkOut:
