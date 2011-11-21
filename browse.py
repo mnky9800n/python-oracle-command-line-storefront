@@ -53,8 +53,15 @@ class Browse:
                 howMany = ga.getInput("How many copies do you want? ","\d+$")
 
 #if the book is already in the cart for the user just add another copy of the book for the user
+                ds.execute('select qty from bs_cart where userid = :userID and isbn = :bookNumber',userID=userLoggedIn,bookNumber=booksToBuy)
 
-                if ds.execute('select qty from bs_cart where userid = :userID and isbn = :bookNumber',userID=userLoggedIn,bookNumber=booksToBuy)>0:
+                if row in ds > 0:
+                    """
+                    row is a tuple.
+                    """
+                  
+#                if ds.execute('select qty from bs_cart where userid = :userID and isbn = :bookNumber',userID=userLoggedIn,bookNumber=booksToBuy)>0:
+
                     ds.execute("UPDATE bs_cart SET bs_cart.qty = bs_cart.qty + :amount WHERE bs_cart.userid = :userID and bs_cart.isbn = :bookNumber",amount=howMany, userID=userLoggedIn,bookNumber=booksToBuy)
 
                 else:
