@@ -214,6 +214,39 @@ class storeMenu(cmd.Cmd):
 type 'help' to list available commands.
 """
     prompt = "Please choose an option: "
+
+    def do_printMenu(self,person):
+        """
+        Prints main menu.
+        format: printMenu <no args>
+        """
+        print  """**********************************************************************
+***                                                                ***
+***                  Welcome to Online Book Store                  ***
+***                          Member Menu                           ***
+***                                                                ***
+**********************************************************************
+
+                     1. Browse by Subject
+
+                     2. Search by Author/Title/Subject
+
+                     3. View/Edit Shopping Cart
+
+                     4. Check Order Status
+
+                     5. Check Out
+
+                     6. One Click Check Out
+
+                     7. View/Edit Personal Information
+
+                     8. logOut
+ 
+type 'help' to list available commands.
+"""
+
+
     def do_logOut(self,person):
         """
         Logs user out and returns them to the 
@@ -244,7 +277,33 @@ type 'help' to list available commands.
         format: browseSubjects <no args>
         """
         b.listSubjects()
-        b.printBooksInSubject(ga.getInput("Choose a subject: ","\w+$"),username)
+        b.printBooksInSubject(ga.getInput("Choose a subject: ","[\w ]+$").lower(),username)
+        print  """**********************************************************************
+***                                                                ***
+***                  Welcome to Online Book Store                  ***
+***                          Member Menu                           ***
+***                                                                ***
+**********************************************************************
+
+                     1. Browse by Subject
+
+                     2. Search by Author/Title/Subject
+
+                     3. View/Edit Shopping Cart
+
+                     4. Check Order Status
+
+                     5. Check Out
+
+                     6. One Click Check Out
+
+                     7. View/Edit Personal Information
+
+                     8. logOut
+ 
+type 'help' to list available commands.
+"""
+        
 
     def do_printCart(self,person):
         """
@@ -253,10 +312,18 @@ type 'help' to list available commands.
         """
         b.printCart(username)
 
-    def do_oneClickCheckout(self,user):
-        user=username
+    def do_oneClickCheckout(self,person):
+        #user=username
         """
         Purchases all items in cart with one action.  Cart contents will be shipped to address on file.
         format: oneClickCheckout <no args>
         """
-        c.oneClick(user)
+        c.oneClick(username)
+        c.printReceipt(username)
+
+    def do_printReceipt(self,person):
+        """
+        Prints receipt for previous orders.
+        format: printReceipt <no args>
+        """
+        c.printReceipt(username)
