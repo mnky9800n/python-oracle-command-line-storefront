@@ -1,7 +1,5 @@
 
 
-#from helpers import *
-#from menus import *
 from browse import *
 from checkout import *
 
@@ -10,23 +8,17 @@ import cmd, cx_Oracle, sys, re
 ds = dataSet("jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman")
 ga = gatherer()
 
-#variables
-
-#functions
-
-#classes
-
 class loginMenu(cmd.Cmd):
 
     def postloop(self):
         print 'You have logged in as: ' + username
 
     intro = """
-**********************************************************************
-***                                                                ***
-***             Welcome to the Online Book Store                   ***
-***                                                                ***
-**********************************************************************
+======================================================================
+=                                                                    =
+=               Welcome to the Online Book Store                     =
+=                                                                    =
+======================================================================
 
                          1. memberLogin
 
@@ -45,11 +37,11 @@ type 'help' to list available commands.
         format: printMenu <no args>
         """
         print """
-**********************************************************************
-***                                                                ***
-***             Welcome to the Online Book Store                   ***
-***                                                                ***
-**********************************************************************
+======================================================================
+=                                                                    =
+=               Welcome to the Online Book Store                     =
+=                                                                    =
+======================================================================
 
                          1. Member Login
 
@@ -101,8 +93,6 @@ format: memberLogin <username> <password>
 
             for row in ds:
                 if ' '.join(row) == tplStr:
-                    #TODO - this should pass the logged in user info to something 
-                    #       the storeMenu class can use.
                     return True
             print 'Incorrect userID or password.  Please try again.'
 
@@ -137,13 +127,6 @@ format: memberLogin <username> <password>
                     break
             else:
                 break
-
-
-#            try:
-#                ds.execute(check.sql,userid=check.user) == None
-#                break
-#            except DatabaseError:
-#                print 'That user name is already in use.  Please enter a new username.'
 
         newUser.password = ga.getInput('Enter password: ', "\w{8}\w*$")
         creditCardYN = ga.getInput('Do you want to store credit card information (y or n): ', "(y|n)$")
@@ -188,12 +171,13 @@ class storeMenu(cmd.Cmd):
     global username
 
 
-    intro = """**********************************************************************
-***                                                                ***
-***                  Welcome to Online Book Store                  ***
-***                          Member Menu                           ***
-***                                                                ***
-**********************************************************************
+    intro = """
+======================================================================
+=                                                                    =
+=                    Welcome to Online Book Store                    =
+=                            Member Menu                             =
+=                                                                    =
+======================================================================
 
                      1. Browse by Subject
 
@@ -220,12 +204,13 @@ type 'help' to list available commands.
         Prints main menu.
         format: printMenu <no args>
         """
-        print  """**********************************************************************
-***                                                                ***
-***                  Welcome to Online Book Store                  ***
-***                          Member Menu                           ***
-***                                                                ***
-**********************************************************************
+        print  """
+======================================================================
+=                                                                    =
+=                    Welcome to Online Book Store                    =
+=                            Member Menu                             =
+=                                                                    =
+======================================================================
 
                      1. Browse by Subject
 
@@ -254,9 +239,6 @@ type 'help' to list available commands.
         format: logOut <no args>
         """
         global username
-        #TODO - this should obliterate any logged in info kept 
-        #       to access the db with.  It should also return
-        #       the user to the login menu
         print """
         goodbye """ + username +"""
         """
@@ -271,19 +253,19 @@ type 'help' to list available commands.
         print username
 
     def do_browseSubjects(self,person):
-        #global username
         """
         Lists different book subjects.
         format: browseSubjects <no args>
         """
         b.listSubjects()
         b.printBooksInSubject(ga.getInput("Choose a subject: ","[\w ]+$").lower(),username)
-        print  """**********************************************************************
-***                                                                ***
-***                  Welcome to Online Book Store                  ***
-***                          Member Menu                           ***
-***                                                                ***
-**********************************************************************
+        print  """
+======================================================================
+=                                                                    =
+=                    Welcome to Online Book Store                    =
+=                            Member Menu                             =
+=                                                                    =
+======================================================================
 
                      1. Browse by Subject
 
@@ -318,7 +300,11 @@ type 'help' to list available commands.
         format: oneClickCheckout <no args>
         """
         c.oneClick(username)
-        c.printReceipt(username,c.orderNumber)
+        if c.cartIsEmpty == True:
+            pass
+        else:
+            c.printReceipt(username,c.orderNumber)
+
 
     def do_printReceipt(self,person):
         """

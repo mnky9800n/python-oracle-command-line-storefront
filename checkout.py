@@ -9,6 +9,9 @@ class checkOut:
     
     def __init__(self):
         self.orderNumber = None
+        self.cartIsEmpty = True
+ #   def __iter__(self):
+ #       return self.orderNumber
 
     global username
     def oneClick(self,userLoggedIn):
@@ -39,8 +42,8 @@ SELECT userid FROM bs_cart WHERE userid = :userid
         #this places the contents of the cart into the order tables
         insertSql = """
     BEGIN
-        INSERT INTO bs_orders (userid, ono)
-            VALUES (:userid, orderNum_seq.NEXTVAL);
+        INSERT INTO bs_orders (userid, ono, timePurchased)
+            VALUES (:userid, orderNum_seq.NEXTVAL,(SELECT current_timestamp FROM dual));
 
         COMMIT;
 
@@ -49,7 +52,14 @@ SELECT userid FROM bs_cart WHERE userid = :userid
                 , shipcity = (SELECT city FROM bs_members WHERE userid = :userid)
                 , shipstate = (SELECT state FROM bs_members WHERE userid = :userid)
                 , shipzip = (SELECT zip FROM bs_members WHERE userid = :userid)
-            WHERE userid = :userid;
+            WHERE userid = :userid
+            AND timePurchased IN 
+                (
+                SELECT MAX(timePurchased)
+                    FROM bs_orders
+                    WHERE userid = :userid
+                    GROUP BY userid
+                );
 
         INSERT INTO bs_odetails (ono, isbn, qty, price)
             SELECT orderNum_seq.CURRVAL, bs_cart.isbn, bs_cart.qty, bs_books.price
@@ -65,6 +75,24 @@ SELECT userid FROM bs_cart WHERE userid = :userid
         #if the cart has contents this for loop is executed
         for row in ds:
             ds.execute(insertSql,userid=userLoggedIn)
+            sql = """
+    SELECT ono
+        FROM bs_orders
+        WHERE userid = :userid
+        AND timePurchased IN
+            (
+            SELECT MAX(timePurchased)
+                FROM bs_orders
+                WHERE userid = :userid
+                GROUP BY userid
+            )
+            """
+
+            ds.execute(sql,userid=userLoggedIn)
+            for row in ds:
+                #self.orderNumber = ''.join(str(i) for i in row)
+                self.orderNumber = ''.join(str(i) for i in row)
+                self.cartIsEmpty = False
             break
 
         #if the cart does not have any contents the user is told to try again
@@ -72,12 +100,8 @@ SELECT userid FROM bs_cart WHERE userid = :userid
             print """
 You have nothing in your cart!
                 """
+            self.cartIsEmpty = True
         
-        sql = "SELECT last_number FROM user_sequences WHERE sequence_name = 'ORDERNUM_SEQ'"
-
-        ds.execute(sql)
-        for row in ds:
-            self.orderNumber = ''.join(str(i) for i in row)
 
 
     def printReceipt(self,userLoggedIn,userOno):
