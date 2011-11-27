@@ -6,8 +6,13 @@ ds = dataSet("jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman")
 ga = gatherer()
 
 class checkOut:
+    
+    def __init__(self):
+        self.orderNumber = None
+
     global username
     def oneClick(self,userLoggedIn):
+
         #this checks if there is a credit card available, if there isn't it denies one click check out
         sql = """
 SELECT creditcardnumber, creditcardtype
@@ -21,7 +26,7 @@ SELECT creditcardnumber, creditcardtype
                 print """
 One click check out is not available if you do not have a credit card on file.
     """
-                break
+                
             else:
                 break
 
@@ -47,7 +52,7 @@ SELECT userid FROM bs_cart WHERE userid = :userid
             WHERE userid = :userid;
 
         INSERT INTO bs_odetails (ono, isbn, qty, price)
-            SELECT bs_orders.ono, bs_cart.isbn, bs_cart.qty, bs_books.price
+            SELECT orderNum_seq.CURRVAL, bs_cart.isbn, bs_cart.qty, bs_books.price
                 FROM bs_orders, bs_cart, bs_books
                 WHERE bs_orders.userid = :userid
                 AND bs_cart.userid = :userid
@@ -67,8 +72,15 @@ SELECT userid FROM bs_cart WHERE userid = :userid
             print """
 You have nothing in your cart!
                 """
+        
+        sql = "SELECT last_number FROM user_sequences WHERE sequence_name = 'ORDERNUM_SEQ'"
 
-    def printReceipt(self,userLoggedIn):
+        ds.execute(sql)
+        for row in ds:
+            self.orderNumber = ''.join(str(i) for i in row)
+
+
+    def printReceipt(self,userLoggedIn,userOno):
 
         #
         # group by order number so that receipts can be separated 
@@ -79,7 +91,7 @@ You have nothing in your cart!
         print """
 ===============================================================================
 =                                                                             =
-=                                  Reciept                                    =
+=                                  Receipt                                    =
 =                                                                             =
 ===============================================================================
 -------------------------------------------------------------------------------
@@ -93,17 +105,18 @@ SELECT bs_books.isbn, bs_books.title, CAST(bs_odetails.qty AS varchar(50)), CAST
     JOIN bs_orders
     ON bs_orders.ono = bs_odetails.ono
     WHERE userid = :userid
+    AND bs_orders.ono = :orderNumber
+    ORDER BY bs_orders.ono
 """
-        ds.execute(sql,userid=userLoggedIn)
+        ds.execute(sql,userid=userLoggedIn,orderNumber=userOno)
         for row in ds:
             print '   '.join(row)
 
         sql = """
 SELECT CAST(SUM(qty*price) AS varchar(50))
-    FROM bs_odetails, bs_orders
-    WHERE bs_odetails.ono = bs_orders.ono
-    AND bs_orders.userid = :userid
+    FROM bs_odetails
+    WHERE bs_odetails.ono = :orderNumber
     """
-        ds.execute(sql,userid=userLoggedIn)
+        ds.execute(sql, orderNumber=userOno)
         for row in ds:
             print "Total: " + ''.join(row)

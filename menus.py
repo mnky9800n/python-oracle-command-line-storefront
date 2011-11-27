@@ -313,17 +313,30 @@ type 'help' to list available commands.
         b.printCart(username)
 
     def do_oneClickCheckout(self,person):
-        #user=username
         """
         Purchases all items in cart with one action.  Cart contents will be shipped to address on file.
         format: oneClickCheckout <no args>
         """
         c.oneClick(username)
-        c.printReceipt(username)
+        c.printReceipt(username,c.orderNumber)
 
     def do_printReceipt(self,person):
         """
         Prints receipt for previous orders.
         format: printReceipt <no args>
         """
-        c.printReceipt(username)
+        sql = "SELECT ono FROM bs_orders WHERE userid = :userid"
+        ds.execute(sql,userid=username)
+        print """
+==========================
+=                        =
+=         Orders         =
+=                        =
+==========================
+        """
+        for row in ds:
+            print ''.join(str(row))
+
+        whatOrder = ga.getInput("Please select an order number: ","\d+$")
+
+        c.printReceipt(username, whatOrder)
