@@ -326,3 +326,11 @@ type 'help' to list available commands.
         whatOrder = ga.getInput("Please select an order number: ","\d+$")
 
         c.printReceipt(username, whatOrder)
+
+    def do_editCart(self,person):
+        """
+Allows users to edit cart.
+format: editCart <no args>
+        """
+        b.printCart(username)
+        b.editCart(username)
