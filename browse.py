@@ -12,9 +12,11 @@ class Browse:
         ds.execute(sql)
         rowCount = 0
         print """
-============
-= Subjects =
-============
+========================
+=                      =
+=       Subjects       =
+=                      =
+========================
 """
         for row in ds:
             print ''.join(row)
@@ -126,3 +128,94 @@ class Browse:
             ds.execute(updateSql,userid=username,isbn=book,amount=quantity)
         else:
             ds.execute(delSql,userid=username,isbn=book)
+
+
+    def search(self, username):
+
+        authorSql = """
+        SELECT title, author, price, isbn 
+        FROM bs_books 
+        WHERE regexp_like(author, :author, 'i')
+        """
+
+        titleSql = """
+        SELECT title, author, price, isbn 
+        FROM bs_books 
+        WHERE regexp_like(title, :title, 'i')
+        """
+
+        options = ga.getInput("""
+    ===============================
+    =                             =
+    =            Search           =
+    =                             =
+    ===============================
+
+        1. Author Search
+        2. Title Search
+        3. Go Back to Member Menu
+
+Please choose an option: """, "1|2|3$")
+
+        if options == '1':
+            ds.execute(authorSql, author = ga.getInput("Please type an Author's name: ","[\w ]+$"))
+            rowCount = 0
+            for row in ds:
+                rowCount += 1
+                print ''
+                print 'Title: ' + row[0]
+                print 'Author: ' + str(row[1])
+                print 'Price: ' + str(row[2])
+                print 'ISBN: ' + str(row[3])
+                print ''
+
+                if rowCount%2==0:
+                    putInCart = ga.getInput("Would you like to put either of these books in your cart? ('y' or 'n', press 'x' to go back to store menu): ","y|n|x$")
+                    if putInCart == 'y':
+                        booksToBuy = ga.getInput("Type the ISBN number of the book you would like to purchase and then hit <Enter>: ", "[\dX]+$")
+                        howMany = ga.getInput("How many copies do you want? ","\d+$")
+                        ds.execute("INSERT INTO bs_cart VALUES (:userID,:isbnNumber,:amount)", userID=username, isbnNumber=booksToBuy, amount=howMany)
+                        break
+                    if putInCart == 'x':
+                        break
+                    else:
+                        continue
+                else:
+                    putInCart = ga.getInput("Would you like to put this in your cart? ('y' or 'n'): ","y|n$")
+                    if putInCart == 'y':
+                        booksToBuy = ga.getInput("Type the ISBN numberof the book you would like to purchase and then hit <Enter>: ", "[\dX]+$")
+                        howMany = int(ga.getInput("How many copies do you want? ","\d+$"))
+
+        elif options == '2':
+            ds.execute(titleSql, title = ga.getInput("Please type a Title: ", "[\w ]+$"))
+            rowCount = 0
+            for row in ds:
+                rowCount += 1
+                print ''
+                print 'Title: ' + row[0]
+                print 'Author: ' + str(row[1])
+                print 'Price: ' + str(row[2])
+                print 'ISBN: ' + str(row[3])
+                print ''
+
+                if rowCount%2==0:
+                    putInCart = ga.getInput("Would you like to put either of these books in your cart? ('y' or 'n', press 'x' to go back to store menu): ","y|n|x$")
+                    if putInCart == 'y':
+                        booksToBuy = ga.getInput("Type the ISBN number of the book you would like to purchase and then hit <Enter>: ", "[\dX]+$")
+                        howMany = ga.getInput("How many copies do you want? ","\d+$")
+                        ds.execute("INSERT INTO bs_cart VALUES (:userID,:isbnNumber,:amount)", userID=username, isbnNumber=booksToBuy, amount=howMany)
+                        break
+                    if putInCart == 'x':
+                        break
+                    else:
+                        continue
+
+                else:
+                    putInCart = ga.getInput("Would you like to put this in your cart? ('y' or 'n'): ","y|n$")
+                    if putInCart == 'y':
+                        booksToBuy = ga.getInput("Type the ISBN numberof the book you would like to purchase and then hit <Enter>: ", "[\dX]+$")
+                        howMany = int(ga.getInput("How many copies do you want? ","\d+$"))
+
+
+        else:
+            pass

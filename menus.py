@@ -334,3 +334,12 @@ format: editCart <no args>
         """
         b.printCart(username)
         b.editCart(username)
+
+
+    def do_search(self,person):
+        """
+Allows users to search by author or title.
+format: search <no args>
+        """
+
+        b.search(username)
