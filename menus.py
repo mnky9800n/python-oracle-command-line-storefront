@@ -343,3 +343,14 @@ format: search <no args>
         """
 
         b.search(username)
+
+    def do_bigCheckOut(self, person):
+        """
+Allows users to checkout by entering credit card information.
+format: bigCheckOut <no args>
+        """
+        b.printCart(username)
+        c.bigCheckOut(username)
+        c.oneClick(username)
+        if c.cartIsEmpty != True:
+            c.printReceipt(username,c.orderNumber)

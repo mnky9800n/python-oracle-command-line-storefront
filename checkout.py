@@ -144,3 +144,51 @@ SELECT CAST(SUM(qty*price) AS varchar(50))
         ds.execute(sql, orderNumber=userOno)
         for row in ds:
             print "Total: " + ''.join(row)
+
+    def bigCheckOut(self, username):
+
+        sql = """
+        BEGIN
+
+        IF :shipAddressExists = 0 THEN
+            UPDATE bs_members
+            SET address = :address
+            ,city = :city
+            ,state = :state
+            ,zip = :zip
+            WHERE userid = :userid;
+        END IF;
+
+        IF :creditCardupdate = 'y' THEN
+            UPDATE bs_members
+            SET creditcardtype = :cctype
+            ,creditcardnumber = :ccnumber
+            WHERE userid = :userid;
+        END IF;
+
+        END;
+        """
+        class userNewInfo:
+            def __init__(self):
+                self.cctype = None
+                self.ccnumber = None
+                self.city = None
+                self.state = None
+                self.streetAddress = None
+                self.zipCode = None
+
+        userInfo = userNewInfo()
+        userInfo.CCupdate = ga.getInput("Would you like to update your creditcard ('y' or 'n')? ", "y|n$")
+        if userInfo.CCupdate == 'y':
+            userInfo.ccnumber = ga.getInput("Please enter the new CC Number: ","\d{16}$")
+            userInfo.cctype = ga.getInput("Please enter type ('visa' or 'amex'): ", "amex|visa$")
+
+        userInfo.shipUpdate = ga.getInput("Would you like to update your shipping address ('y' or 'n')? ", "y|n$")
+        if userInfo.shipUpdate == 'y':
+            userInfo.streetAddress = ga.getInput('Enter street address: ', "[\w\s]+$")
+            userInfo.city = ga.getInput('Enter city: ', "[a-zA-Z ']+$")
+            userInfo.state = ga.getInput('Enter state abbreviation: ', "\w{2}$")
+            userInfo.zipCode = ga.getInput('Enter zip code: ', "^\d{5}(-\d{4})?$")
+        if userInfo.CCupdate == 'y' or userInfo.shipUpdate == 'y':
+            ds.execute(sql, userid=username, cctype=userInfo.cctype, ccnumber=userInfo.ccnumber,address=userInfo.streetAddress,city=userInfo.city,state=userInfo.state,zip=userInfo.zipCode)
+
