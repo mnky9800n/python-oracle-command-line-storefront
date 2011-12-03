@@ -5,6 +5,8 @@ from menus import *
 ds = dataSet("jaiken1/jaiken1@tinman.cs.gsu.edu:1522/tinman")
 ga = gatherer()
 
+# checkout
+
 class checkOut:
     
     def __init__(self):
@@ -72,6 +74,8 @@ SELECT userid FROM bs_cart WHERE userid = :userid
             WHERE userid = :userid;
     END;
             """
+            
+
         #if the cart has contents this for loop is executed
         for row in ds:
             ds.execute(insertSql,userid=userLoggedIn)
@@ -90,11 +94,10 @@ SELECT userid FROM bs_cart WHERE userid = :userid
 
             ds.execute(sql,userid=userLoggedIn)
             for row in ds:
-                #self.orderNumber = ''.join(str(i) for i in row)
                 self.orderNumber = ''.join(str(i) for i in row)
                 self.cartIsEmpty = False
             break
-
+        
         #if the cart does not have any contents the user is told to try again
         else:
             print """
@@ -150,7 +153,7 @@ SELECT CAST(SUM(qty*price) AS varchar(50))
         sql = """
         BEGIN
 
-        IF :shipAddressExists = 0 THEN
+        IF :shipAddressExists = 'y' THEN
             UPDATE bs_members
             SET address = :address
             ,city = :city
@@ -190,5 +193,5 @@ SELECT CAST(SUM(qty*price) AS varchar(50))
             userInfo.state = ga.getInput('Enter state abbreviation: ', "\w{2}$")
             userInfo.zipCode = ga.getInput('Enter zip code: ', "^\d{5}(-\d{4})?$")
         if userInfo.CCupdate == 'y' or userInfo.shipUpdate == 'y':
-            ds.execute(sql, userid=username, cctype=userInfo.cctype, ccnumber=userInfo.ccnumber,address=userInfo.streetAddress,city=userInfo.city,state=userInfo.state,zip=userInfo.zipCode)
+            ds.execute(sql, userid=username,shipAddressExists=userInfo.shipUpdate,creditCardupdate=userInfo.CCupdate, cctype=userInfo.cctype, ccnumber=userInfo.ccnumber,address=userInfo.streetAddress,city=userInfo.city,state=userInfo.state,zip=userInfo.zipCode)
 
