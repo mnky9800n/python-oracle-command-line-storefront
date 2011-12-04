@@ -56,3 +56,6 @@ class dataSet:
         #make list into list of strings of the dict keys
         cols = [pair[0] for pair in cols]
         return cols
+
+    def rowcount(self):
+        return self._curs.rowcount

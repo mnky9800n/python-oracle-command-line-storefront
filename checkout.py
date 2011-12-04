@@ -37,7 +37,7 @@ One click check out is not available if you do not have a credit card on file.
 
         #this checks to see if the user has anything in the cart
         cartSql = """
-SELECT userid FROM bs_cart WHERE userid = :userid
+SELECT DISTINCT userid FROM bs_cart WHERE userid = :userid
         """
         ds.execute(cartSql,userid=userLoggedIn)
 
@@ -74,10 +74,8 @@ SELECT userid FROM bs_cart WHERE userid = :userid
             WHERE userid = :userid;
     END;
             """
-            
-
         #if the cart has contents this for loop is executed
-        for row in ds:
+        if ds.rowcount()>0:
             ds.execute(insertSql,userid=userLoggedIn)
             sql = """
     SELECT ono
@@ -96,7 +94,6 @@ SELECT userid FROM bs_cart WHERE userid = :userid
             for row in ds:
                 self.orderNumber = ''.join(str(i) for i in row)
                 self.cartIsEmpty = False
-            break
         
         #if the cart does not have any contents the user is told to try again
         else:
