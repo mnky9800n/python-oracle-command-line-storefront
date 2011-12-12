@@ -174,7 +174,11 @@ Please choose an option: """, "1|2|3$")
                     if putInCart == 'y':
                         booksToBuy = ga.getInput("Type the ISBN number of the book you would like to purchase and then hit <Enter>: ", "[\dX]+$")
                         howMany = ga.getInput("How many copies do you want? ","\d+$")
-                        ds.execute("BEGIN INSERT INTO bs_cart VALUES (:userID,:isbnNumber,:amount); COMMIT; END;", userID=username, isbnNumber=booksToBuy, amount=howMany)
+                        sql = """
+                        INSERT INTO bs_cart
+                        VALUES(:userID, :isbnNumber, :amount)
+                        """
+                        ds.execute(sql, userID=username, isbnNumber=booksToBuy, amount=howMany)
                         break
                     if putInCart == 'x':
                         break
@@ -185,6 +189,12 @@ Please choose an option: """, "1|2|3$")
                 if putInCart == 'y':
                     booksToBuy = ga.getInput("Type the ISBN numberof the book you would like to purchase and then hit <Enter>: ", "[\dX]+$")
                     howMany = int(ga.getInput("How many copies do you want? ","\d+$"))
+
+                    sql = """
+                    INSERT INTO bs_cart
+                    VALUES (:userid, :isbn, :amount)
+                    """
+                    ds.execute(sql,userid=username,isbn=booksToBuy,amount=howMany)
 
         elif options == '2':
             ds.execute(titleSql, title = ga.getInput("Please type a Title: ", "[\w ]+$"))

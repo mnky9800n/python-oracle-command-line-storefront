@@ -354,3 +354,14 @@ format: bigCheckOut <no args>
         c.oneClick(username)
         if c.cartIsEmpty != True:
             c.printReceipt(username,c.orderNumber)
+
+    def do_test(self,person):
+        sql = "SELECT DISTINCT userid FROM bs_cart"
+        ds.execute(sql)
+        print ds.rowcount()
+        print ds.columnNames()
+        print ds.rowcount()
+        for row in ds:
+            print row
+
+        print ds.rowcount()

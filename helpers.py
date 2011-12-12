@@ -58,4 +58,5 @@ class dataSet:
         return cols
 
     def rowcount(self):
+        self._curs.fetchone()
         return self._curs.rowcount

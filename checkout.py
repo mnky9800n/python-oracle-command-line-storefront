@@ -43,11 +43,17 @@ SELECT DISTINCT userid FROM bs_cart WHERE userid = :userid
 
         #this places the contents of the cart into the order tables
         insertSql = """
+    DECLARE
+
+    ONUM_SEQ number(5);
+
     BEGIN
         INSERT INTO bs_orders (userid, ono, timePurchased)
             VALUES (:userid, orderNum_seq.NEXTVAL,(SELECT current_timestamp FROM dual));
 
         COMMIT;
+
+        ONUM_SEQ := orderNum_seq.CURRVAL;
 
         UPDATE bs_orders
             SET shipaddress = (SELECT address FROM bs_members WHERE userid = :userid)
@@ -55,27 +61,32 @@ SELECT DISTINCT userid FROM bs_cart WHERE userid = :userid
                 , shipstate = (SELECT state FROM bs_members WHERE userid = :userid)
                 , shipzip = (SELECT zip FROM bs_members WHERE userid = :userid)
             WHERE userid = :userid
-            AND timePurchased IN 
-                (
-                SELECT MAX(timePurchased)
-                    FROM bs_orders
-                    WHERE userid = :userid
-                    GROUP BY userid
-                );
+            AND ono IN (
+                SELECT ono 
+                    FROM bs_orders WHERE userid=:userid 
+                    AND timePurchased IN 
+                        (
+                        SELECT MAX(timePurchased)
+                            FROM bs_orders
+                            WHERE userid = :userid
+                            GROUP BY userid
+                        )
+                      );
 
         INSERT INTO bs_odetails (ono, isbn, qty, price)
             SELECT orderNum_seq.CURRVAL, bs_cart.isbn, bs_cart.qty, bs_books.price
                 FROM bs_orders, bs_cart, bs_books
                 WHERE bs_orders.userid = :userid
                 AND bs_cart.userid = :userid
-                AND bs_books.isbn = bs_cart.isbn;
+                AND bs_books.isbn = bs_cart.isbn
+                AND bs_orders.ono = ONUM_SEQ;
 
         DELETE FROM bs_cart
             WHERE userid = :userid;
     END;
             """
         #if the cart has contents this for loop is executed
-        if ds.rowcount()>0:
+        if ds.rowcount() > 0:
             ds.execute(insertSql,userid=userLoggedIn)
             sql = """
     SELECT ono
